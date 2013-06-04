@@ -11,15 +11,13 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.google.cloud.backend.android;
+package com.ericrgon;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.google.api.client.util.DateTime;
-import com.google.cloud.backend.android.CloudQuery.Order;
-import com.google.cloud.backend.android.CloudQuery.Scope;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -130,14 +128,14 @@ public class CloudBackendMessaging extends CloudBackendAsync {
     CloudQuery cq = new CloudQuery(KIND_NAME_CLOUD_MESSAGES);
     cq.setFilter(F.and(F.eq(PROP_TOPIC_ID, topicId),
         F.gt(CloudEntity.PROP_CREATED_AT, new DateTime(lastTime))));
-    cq.setSort(CloudEntity.PROP_CREATED_AT, Order.DESC);
+    cq.setSort(CloudEntity.PROP_CREATED_AT, CloudQuery.Order.DESC);
     cq.setSubscriptionDurationSec(SUBSCRIPTION_DURATION_FOR_PUSH_MESSAGE);
     if (includeOfflineMessages) {
       cq.setLimit(maxOfflineMessages);
-      cq.setScope(Scope.FUTURE_AND_PAST);
+      cq.setScope(CloudQuery.Scope.FUTURE_AND_PAST);
     } else {
       cq.setLimit(DEFAULT_MAX_MESSAGES_TO_RECEIVE);
-      cq.setScope(Scope.FUTURE);
+      cq.setScope(CloudQuery.Scope.FUTURE);
     }
 
     // set topicId as a queryId. Any queries on the same topic will
@@ -153,7 +151,7 @@ public class CloudBackendMessaging extends CloudBackendAsync {
    */
   public void unsubscribeFromCloudMessage(String topicId) {
     cloudMessageHandlers.remove(topicId);
-    CloudBackendAsync.continuousQueries.remove(topicId);
+    continuousQueries.remove(topicId);
   }
 
   private String getPrefKeyForTopicId(String topicId) {
@@ -187,9 +185,9 @@ public class CloudBackendMessaging extends CloudBackendAsync {
 
       // refresh subscriber query to receive new messages from now
       CloudQuery cq = createQueryForCloudMessage(topicId, DEFAULT_MAX_MESSAGES_TO_RECEIVE);
-      ContinuousQueryHandler cqh = CloudBackendAsync.continuousQueries.get(topicId);
-      CloudBackendAsync.continuousQueries.put(topicId, new ContinuousQueryHandler(cqh.getHandler(),
-          cq, getCredential()));
+      ContinuousQueryHandler cqh = continuousQueries.get(topicId);
+      continuousQueries.put(topicId, new ContinuousQueryHandler(cqh.getHandler(),
+              cq, getCredential()));
 
       // sort messages by createdAt ASC
       Collections.reverse(messages);

@@ -20,12 +20,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.cloud.backend.android.CloudBackendActivity;
-import com.google.cloud.backend.android.CloudCallbackHandler;
-import com.google.cloud.backend.android.CloudEntity;
-import com.google.cloud.backend.android.CloudQuery.Order;
-import com.google.cloud.backend.android.CloudQuery.Scope;
-import com.google.cloud.backend.android.R;
+import com.ericrgon.CloudBackendActivity;
+import com.ericrgon.CloudCallbackHandler;
+import com.ericrgon.CloudEntity;
+import com.ericrgon.CloudQuery.Order;
+import com.ericrgon.CloudQuery.Scope;
+import com.ericrgon.R;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -59,9 +59,9 @@ public class GuestbookActivity extends CloudBackendActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
-    tvPosts = (TextView) findViewById(R.id.tvPosts);
-    etMessage = (EditText) findViewById(R.id.etMessage);
-    btSend = (Button) findViewById(R.id.btSend);
+//    tvPosts = (TextView) findViewById(R.id.tvPosts);
+//    etMessage = (EditText) findViewById(R.id.etMessage);
+//    btSend = (Button) findViewById(R.id.btSend);
   }
 
   @Override

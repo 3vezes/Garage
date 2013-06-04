@@ -11,7 +11,7 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.google.cloud.backend.android;
+package com.ericrgon;
 
 /**
  * A class to hold hard coded constants. Developers may modify the values based

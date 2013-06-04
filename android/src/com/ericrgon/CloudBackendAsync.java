@@ -11,7 +11,7 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.google.cloud.backend.android;
+package com.ericrgon;
 
 import android.app.Activity;
 import android.app.Application;
@@ -22,8 +22,6 @@ import android.os.Handler;
 import android.util.Log;
 
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
-import com.google.cloud.backend.android.CloudQuery.Order;
-import com.google.cloud.backend.android.CloudQuery.Scope;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -255,7 +253,7 @@ public class CloudBackendAsync extends CloudBackend {
     // register the query as continuous query
     if (query.isContinuous()) {
       CloudQuery ncq = new CloudQuery(query);
-      ncq.setScope(Scope.PAST);
+      ncq.setScope(CloudQuery.Scope.PAST);
       ContinuousQueryHandler cqh = new ContinuousQueryHandler(handler, ncq, getCredential());
       continuousQueries.put(query.getQueryId(), cqh);
     }
@@ -314,17 +312,17 @@ public class CloudBackendAsync extends CloudBackend {
    * @param propertyValue
    *          value that will be used in the filtering
    * @param order
-   *          {@link Order} of sorting on the specified property (ignored when
+   *          {@link com.ericrgon.CloudQuery.Order} of sorting on the specified property (ignored when
    *          inequality filter is not used as the operator)
    * @param limit
    *          number of maximum entities to be returned
    * @param scope
-   *          {@link Scope} of this query
+   *          {@link com.ericrgon.CloudQuery.Scope} of this query
    * @param handler
    *          {@link CloudCallbackHandler} that handles the response.
    */
   public void listByProperty(String kindName, String propertyName, F.Op operator,
-      Object propertyValue, CloudQuery.Order order, int limit, Scope scope,
+      Object propertyValue, CloudQuery.Order order, int limit, CloudQuery.Scope scope,
       CloudCallbackHandler<List<CloudEntity>> handler) {
 
     CloudQuery cq = new CloudQuery(kindName);
@@ -344,16 +342,16 @@ public class CloudBackendAsync extends CloudBackend {
    * @param sortPropertyName
    *          property name for sorting
    * @param order
-   *          {@link Order} of sorting on the specified property
+   *          {@link com.ericrgon.CloudQuery.Order} of sorting on the specified property
    * @param limit
    *          number of maximum entities to be returned
    * @param scope
-   *          {@link Scope} of this query
+   *          {@link com.ericrgon.CloudQuery.Scope} of this query
    * @param handler
    *          {@link CloudCallbackHandler} that handles the response.
    */
   public void listByKind(String kindName, String sortPropertyName, CloudQuery.Order order,
-      int limit, Scope scope, CloudCallbackHandler<List<CloudEntity>> handler) {
+      int limit, CloudQuery.Scope scope, CloudCallbackHandler<List<CloudEntity>> handler) {
 
     CloudQuery cq = new CloudQuery(kindName);
     cq.setSort(sortPropertyName, order);
@@ -387,13 +385,13 @@ public class CloudBackendAsync extends CloudBackend {
    * @param kindName
    *          a name of Kind to query
    * @param scope
-   *          {@link Scope} of this query
+   *          {@link com.ericrgon.CloudQuery.Scope} of this query
    * @param handler
    *          {@link CloudCallbackHandler} that handles the response.
    */
-  public void getLastEntityOfKind(String kindName, Scope scope,
+  public void getLastEntityOfKind(String kindName, CloudQuery.Scope scope,
       CloudCallbackHandler<List<CloudEntity>> handler) {
-    this.listByKind(kindName, CloudEntity.PROP_CREATED_AT, Order.DESC, 1, scope, handler);
+    this.listByKind(kindName, CloudEntity.PROP_CREATED_AT, CloudQuery.Order.DESC, 1, scope, handler);
   }
 
   // a Thread class that will call backend API asynchronously

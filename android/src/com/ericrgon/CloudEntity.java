@@ -11,9 +11,10 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.google.cloud.backend.android;
+package com.ericrgon;
 
 import com.google.api.client.util.DateTime;
+import com.google.api.client.util.Maps;
 import com.google.cloud.backend.android.mobilebackend.model.EntityDto;
 
 import java.util.Date;
@@ -76,7 +77,7 @@ public class CloudEntity {
     co.createdBy = cd.getCreatedBy();
     co.updatedBy = cd.getUpdatedBy();
     co.kindName = cd.getKindName();
-    co.properties.putAll((Map<String, Object>) cd.getProperties());
+    co.properties.putAll(cd.getProperties() == null ? Maps.<String,Object>newHashMap() : (Map < String, Object >) cd.getProperties());
     co.owner = cd.getOwner();
     return co;
   }

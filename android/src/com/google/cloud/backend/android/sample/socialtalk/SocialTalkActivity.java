@@ -18,10 +18,10 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.google.cloud.backend.android.CloudBackendActivity;
-import com.google.cloud.backend.android.CloudCallbackHandler;
-import com.google.cloud.backend.android.CloudEntity;
-import com.google.cloud.backend.android.R;
+import com.ericrgon.R;
+import com.ericrgon.CloudBackendActivity;
+import com.ericrgon.CloudCallbackHandler;
+import com.ericrgon.CloudEntity;
 
 import java.text.SimpleDateFormat;
 import java.util.LinkedList;
@@ -50,8 +50,8 @@ public class SocialTalkActivity extends CloudBackendActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
-    tvPosts = (TextView) findViewById(R.id.tvPosts);
-    etMessage = (EditText) findViewById(R.id.etMessage);
+//    tvPosts = (TextView) findViewById(R.id.tvPosts);
+//    etMessage = (EditText) findViewById(R.id.etMessage);
   }
 
   @Override
