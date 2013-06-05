@@ -6,6 +6,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.api.client.repackaged.com.google.common.base.Strings;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -24,6 +26,7 @@ public class GarageActivity extends CloudBackendActivity {
 
     private static final String OPEN = "open";
     private static final String CLOSED = "closed";
+    private static final String STATE_KEY = "state";
 
     private enum States {OPEN,CLOSED};
 
@@ -56,6 +59,10 @@ public class GarageActivity extends CloudBackendActivity {
     public void onBuzzButtonPressed(View view) {
         CloudEntity newBuzz = new CloudEntity(DOCUMENT_NAME);
 
+        //Switch state and commit new message.
+        String newState = OPEN.equals(getMostRecentState()) ? CLOSED : OPEN;
+        newBuzz.put(STATE_KEY,newState);
+
         CloudCallbackHandler<CloudEntity> handler = new CloudCallbackHandler<CloudEntity>() {
             @Override
             public void onComplete(CloudEntity results) {
@@ -77,6 +84,15 @@ public class GarageActivity extends CloudBackendActivity {
             stringBuilder.append(entity.getCreatedAt() + "\n");
         }
         mView.setText(stringBuilder.toString());
+
+        mState.setText(getMostRecentState());
+    }
+
+    private String getMostRecentState(){
+        if(logList.isEmpty()){
+            return "Unknown";
+        }
+        return (String) logList.get(0).get(STATE_KEY);
     }
 
 }
