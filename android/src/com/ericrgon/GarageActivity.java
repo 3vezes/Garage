@@ -1,11 +1,13 @@
 package com.ericrgon;
 
 
+import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.os.Bundle;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -92,13 +94,6 @@ public class GarageActivity extends CloudBackendActivity {
 
     private void updateLogs() {
 
-        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mState,View.TRANSLATION_X,mState.getWidth() * 2);
-        objectAnimator.setRepeatCount(1);
-        objectAnimator.setRepeatMode(ValueAnimator.REVERSE);
-        objectAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
-        objectAnimator.setDuration(300);
-        objectAnimator.start();
-
         mActivityLogAdapter.clear();
         //We're skipping index 0 because it's already displayed at the top of the view.
         for(int i = 1 ; i < logList.size(); i++){
@@ -107,15 +102,44 @@ public class GarageActivity extends CloudBackendActivity {
             mActivityLogAdapter.add(entry);
         }
 
-        String mostRecentState = getMostRecentState();
-        mState.setText(mostRecentState);
+        final String mostRecentState = getMostRecentState();
 
-        if(CLOSED.equals(mostRecentState)){
-            mState.setBackgroundResource(R.color.purple);
-        }
-        else {
-            mState.setBackgroundResource(R.color.blue);
-        }
+        //Move the controls off screen
+        ObjectAnimator stateAnimator = ObjectAnimator.ofFloat(mState,View.TRANSLATION_X,mState.getWidth() * 2);
+        stateAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
+        stateAnimator.setDuration(200);
+        stateAnimator.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animator) {}
+
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                //Change the view while it's offscreen.
+                mState.setText(mostRecentState);
+
+                if (CLOSED.equals(mostRecentState)) {
+                    mState.setBackgroundResource(R.color.purple);
+                } else {
+                    mState.setBackgroundResource(R.color.blue);
+                }
+
+                //Bring the view back.
+                ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mState, View.TRANSLATION_X, mState.getWidth(), 0);
+                objectAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
+                objectAnimator.setStartDelay(50);
+                objectAnimator.setDuration(200);
+                objectAnimator.start();
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animator) {}
+
+            @Override
+            public void onAnimationRepeat(Animator animator) {}
+        });
+
+        stateAnimator.start();
+
 
         //Change the button text and color for state change.
         if(OPEN.equals(mostRecentState)){
@@ -128,7 +152,6 @@ public class GarageActivity extends CloudBackendActivity {
             mBuzzButtonText.setText(OPEN);
             mBuzzButton.setBackgroundResource(R.color.blue);
         }
-
     }
 
     private String getMostRecentState(){
