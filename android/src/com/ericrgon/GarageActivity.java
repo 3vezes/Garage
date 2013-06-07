@@ -60,7 +60,7 @@ public class GarageActivity extends CloudBackendActivity {
             }
         };
 
-        getCloudBackend().listByKind(DOCUMENT_NAME,CloudEntity.PROP_CREATED_AT, CloudQuery.Order.DESC,5,
+        getCloudBackend().listByKind(DOCUMENT_NAME,CloudEntity.PROP_CREATED_AT, CloudQuery.Order.DESC,6,
                 CloudQuery.Scope.FUTURE_AND_PAST,handler);
     }
 
@@ -84,24 +84,12 @@ public class GarageActivity extends CloudBackendActivity {
         getCloudBackend().insert(newBuzz,handler);
 
         mBuzzButton.setEnabled(false);
-
-        //Change the button text and color for state change.
-        if(OPEN.equals(newState)){
-            //Close options
-            mBuzzButtonText.setText(CLOSE);
-            mBuzzButton.setBackgroundResource(R.color.purple);
-        }
-        else {
-            //Open Options
-            mBuzzButtonText.setText(OPEN);
-            mBuzzButton.setBackgroundResource(R.color.blue);
-        }
     }
 
     private void updateLogs() {
 
         mActivityLogAdapter.clear();
-        //We're skipping index 0 because it's already displayed at the top of the view. 
+        //We're skipping index 0 because it's already displayed at the top of the view.
         for(int i = 1 ; i < logList.size(); i++){
             CloudEntity entity = logList.get(i);
             LogEntry entry = new LogEntry(entity.getCreatedBy(),entity.getCreatedAt(), (String) entity.get(STATE_KEY));
@@ -117,6 +105,19 @@ public class GarageActivity extends CloudBackendActivity {
         else {
             mState.setBackgroundResource(R.color.blue);
         }
+
+        //Change the button text and color for state change.
+        if(OPEN.equals(mostRecentState)){
+            //Close options
+            mBuzzButtonText.setText(CLOSE);
+            mBuzzButton.setBackgroundResource(R.color.purple);
+        }
+        else {
+            //Open Options
+            mBuzzButtonText.setText(OPEN);
+            mBuzzButton.setBackgroundResource(R.color.blue);
+        }
+
     }
 
     private String getMostRecentState(){
