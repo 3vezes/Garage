@@ -3,10 +3,11 @@ package com.ericrgon;
 
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
-import com.google.api.client.repackaged.com.google.common.base.Strings;
+import com.ericrgon.model.LogEntry;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -16,27 +17,34 @@ import java.util.List;
  */
 public class GarageActivity extends CloudBackendActivity {
 
-    private Button mBuzzButton;
-    private TextView mView;
+    private LinearLayout mBuzzButton;
+    private TextView mBuzzButtonText;
     private TextView mState;
+
+    private ActivityLogAdapter mActivityLogAdapter;
 
     private List<CloudEntity> logList = new LinkedList<CloudEntity>();
 
     private static final String DOCUMENT_NAME = "Buzz";
 
-    private static final String OPEN = "open";
-    private static final String CLOSED = "closed";
+    public static final String OPEN = "Open";
+    public static final String CLOSED = "Closed";
+    private static final String CLOSE = "Close";
     private static final String STATE_KEY = "state";
-
-    private enum States {OPEN,CLOSED};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mBuzzButton = (Button) findViewById(R.id.buzz);
-        mView = (TextView) findViewById(R.id.logs);
+        mActivityLogAdapter = new ActivityLogAdapter(this,R.layout.list_item);
+
+        mBuzzButton = (LinearLayout) findViewById(R.id.buzzButton);
+        mBuzzButtonText = (TextView) mBuzzButton.findViewById(R.id.buzzLabel);
+
+        ListView activityLogList = (ListView) findViewById(R.id.activityList);
+        activityLogList.setAdapter(mActivityLogAdapter);
+
         mState = (TextView) findViewById(R.id.status);
     }
 
@@ -52,7 +60,7 @@ public class GarageActivity extends CloudBackendActivity {
             }
         };
 
-        getCloudBackend().listByKind(DOCUMENT_NAME,CloudEntity.PROP_CREATED_AT, CloudQuery.Order.DESC,15,
+        getCloudBackend().listByKind(DOCUMENT_NAME,CloudEntity.PROP_CREATED_AT, CloudQuery.Order.DESC,5,
                 CloudQuery.Scope.FUTURE_AND_PAST,handler);
     }
 
@@ -76,16 +84,39 @@ public class GarageActivity extends CloudBackendActivity {
         getCloudBackend().insert(newBuzz,handler);
 
         mBuzzButton.setEnabled(false);
+
+        //Change the button text and color for state change.
+        if(OPEN.equals(newState)){
+            //Close options
+            mBuzzButtonText.setText(CLOSE);
+            mBuzzButton.setBackgroundResource(R.color.purple);
+        }
+        else {
+            //Open Options
+            mBuzzButtonText.setText(OPEN);
+            mBuzzButton.setBackgroundResource(R.color.blue);
+        }
     }
 
     private void updateLogs() {
-        StringBuilder stringBuilder = new StringBuilder();
-        for(CloudEntity entity : logList){
-            stringBuilder.append(entity.getCreatedAt() + "\n");
-        }
-        mView.setText(stringBuilder.toString());
 
-        mState.setText(getMostRecentState());
+        mActivityLogAdapter.clear();
+        //We're skipping index 0 because it's already displayed at the top of the view. 
+        for(int i = 1 ; i < logList.size(); i++){
+            CloudEntity entity = logList.get(i);
+            LogEntry entry = new LogEntry(entity.getCreatedBy(),entity.getCreatedAt(), (String) entity.get(STATE_KEY));
+            mActivityLogAdapter.add(entry);
+        }
+
+        String mostRecentState = getMostRecentState();
+        mState.setText(mostRecentState);
+
+        if(CLOSED.equals(mostRecentState)){
+            mState.setBackgroundResource(R.color.purple);
+        }
+        else {
+            mState.setBackgroundResource(R.color.blue);
+        }
     }
 
     private String getMostRecentState(){
@@ -94,5 +125,4 @@ public class GarageActivity extends CloudBackendActivity {
         }
         return (String) logList.get(0).get(STATE_KEY);
     }
-
 }

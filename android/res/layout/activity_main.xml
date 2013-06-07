@@ -1,52 +1,79 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".GuestbookActivity" >
-
-    <Button
-            android:id="@+id/buzz"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:enabled="true"
-            android:layout_centerInParent="true"
-            android:onClick="onBuzzButtonPressed"
-            android:text="Buzz"
-            />
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/status"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/buzz"
-        android:layout_centerHorizontal="true"
-        android:textSize="20sp"
-        android:text="Unknown"/>
+            android:id="@+id/home"
+            android:text="@string/home"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:paddingTop="5dp"
+            android:paddingLeft="5dp"
+            android:textSize="26sp"
+            android:textColor="@color/gray"
+            android:fontFamily="sans-serif-light"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"/>
 
-    <ScrollView
-            android:id="@+id/scrollView1"
+    <TextView
+            android:id="@+id/status"
+            android:text="@string/open"
+            android:textStyle="bold"
+            android:textSize="22sp"
+            android:textColor="@color/white"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
+            android:padding="5dp"
             android:layout_alignParentRight="true"
-            android:layout_below="@id/buzz"
-            android:fillViewport="true" >
+            android:layout_alignBaseline="@id/home"
+            android:background="@color/blue"/>
 
-        <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" >
+    <LinearLayout
+            android:id="@+id/buzzButton"
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:orientation="horizontal"
+            android:background="@color/purple"
+            android:layout_centerHorizontal="true"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:gravity="center"
+            android:layout_margin="20dp"
+            android:layout_below="@id/home"
+            android:onClick="onBuzzButtonPressed">
+        <ImageView
+            android:id="@+id/house"
+            android:layout_height="100dp"
+            android:layout_width="100dp"
+            android:src="@drawable/white_house_small"/>
+        <TextView
+                android:id="@+id/buzzLabel"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="20dp"
+                android:text="@string/close"
+                android:fontFamily="sans-serif-light"
+                android:textSize="39sp"
+                android:textColor="@color/white"/>
+    </LinearLayout>
 
-            <TextView
-                    android:id="@+id/logs"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:focusable="false"
-                    android:focusableInTouchMode="false"
-                    android:text="@string/emptystring"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
-        </LinearLayout>
-    </ScrollView>
-
-
+    <TextView
+            android:id="@+id/activity"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:text="@string/activity"
+            android:textSize="22sp"
+            android:fontFamily="sans-serif-light"
+            android:textColor="@color/gray"
+            android:layout_below="@id/buzzButton"
+            android:padding="5dp"
+            style="?android:attr/listSeparatorTextViewStyle"/>
+    <ListView
+            android:id="@+id/activityList"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:layout_below="@id/activity"/>
 </RelativeLayout>
