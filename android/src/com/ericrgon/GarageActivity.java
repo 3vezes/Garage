@@ -60,12 +60,13 @@ public class GarageActivity extends CloudBackendActivity {
         CloudCallbackHandler<List<CloudEntity>> handler = new CloudCallbackHandler<List<CloudEntity>>() {
             @Override
             public void onComplete(List<CloudEntity> results) {
-                logList = results;
+                logList.clear();
+                logList.addAll(results);
                 updateLogs();
             }
         };
 
-        getCloudBackend().listByKind(DOCUMENT_NAME,CloudEntity.PROP_CREATED_AT, CloudQuery.Order.DESC,6,
+        getCloudBackend().listByKind(DOCUMENT_NAME,CloudEntity.PROP_CREATED_AT, CloudQuery.Order.DESC,5,
                 CloudQuery.Scope.FUTURE_AND_PAST,handler);
     }
 
@@ -81,6 +82,7 @@ public class GarageActivity extends CloudBackendActivity {
             public void onComplete(CloudEntity results) {
                 //Save result and display
                 logList.add(0,results);
+                logList.remove(logList.size() -1);
                 updateLogs();
                 mBuzzButton.setEnabled(true);
             }
