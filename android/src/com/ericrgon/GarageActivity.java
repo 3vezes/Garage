@@ -1,8 +1,11 @@
 package com.ericrgon;
 
 
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.os.Bundle;
 import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -86,7 +89,15 @@ public class GarageActivity extends CloudBackendActivity {
         mBuzzButton.setEnabled(false);
     }
 
+
     private void updateLogs() {
+
+        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mState,View.TRANSLATION_X,mState.getWidth() * 2);
+        objectAnimator.setRepeatCount(1);
+        objectAnimator.setRepeatMode(ValueAnimator.REVERSE);
+        objectAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
+        objectAnimator.setDuration(300);
+        objectAnimator.start();
 
         mActivityLogAdapter.clear();
         //We're skipping index 0 because it's already displayed at the top of the view.
